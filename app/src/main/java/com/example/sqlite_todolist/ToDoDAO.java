@@ -46,19 +46,45 @@ public class ToDoDAO {
         return list;
     }
 
-    public boolean addToDo(ToDo todo){
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        database.beginTransaction();
-        ContentValues values = new ContentValues();
-
-        values.put("TITLE", todo.getTitle());
-        values.put("CONTENT", todo.getContent());
-        values.put("DATE", todo.getDate());
-        values.put("TYPE", todo.getType());
-        values.put("STATUS", todo.getStatus());
-
-        long check = database.insert("TODO", null, values);
+    public boolean Add(ToDo toDo) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("TITLE", toDo.getTitle());
+        cv.put("CONTENT", toDo.getContent());
+        cv.put("DATE", toDo.getDate());  // Thay đổi từ "TYPE" thành "DATE"
+        cv.put("STATUS", 0);
+        long check = db.insert("TODO", null, cv);
         return check != -1;
-
     }
+
+    public boolean Update(ToDo toDo) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("TITLE", toDo.getTitle());
+        cv.put("CONTENT", toDo.getContent());
+        cv.put("DATE", toDo.getDate());
+        cv.put("TYPE", toDo.getType());
+        cv.put("STATUS", toDo.getStatus());
+
+        int rowsAffected = db.update("TODO", cv, "ID=?", new String[]{String.valueOf(toDo.getId())});
+        db.close();
+
+        return rowsAffected > 0;
+    }
+
+    public boolean Delete(int Id){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long check = db.delete("TODO","ID=?",new String[]{String.valueOf(Id)});
+        return check!=1;
+    }
+
+    // Hàm deleteToDo để xóa một ToDo từ cơ sở dữ liệu
+    public boolean deleteToDo(int toDoId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        int affectedRows = db.delete("TODO", "ID=?", new String[]{String.valueOf(toDoId)});
+        return affectedRows > 0;
+    }
+
+
 }

@@ -44,4 +44,8 @@ public class ToDoAdapter extends ArrayAdapter<ToDo> {
 
         return convertView;
     }
+
+    public ToDo getSelectedItem(int position) {
+        return getItem(position);
+    }
 }
